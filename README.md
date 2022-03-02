@@ -35,8 +35,8 @@ ROOT
      └────......
 ```
 
-# Run S2OSC
-You just need to run `main.py`. This file includes initial training for Model_F and stream training for Model_G. You may want to specify paramters for `dataset` and `device`.
+# Run CILF
+You just need to run `main.py`. You may want to specify paramters for `dataset` and `device`.
 
 ```
 python main.py --dataset CIFAR10 --device 0
