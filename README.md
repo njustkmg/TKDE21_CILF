@@ -2,6 +2,8 @@
 
 This is code for the paper "Learning Adaptive Embedding Considering Incremental Class".
 
+IEEE Transactions on Knowledge and Data Engineering (IEEE TKDE), 2021
+
 # Dependencies
 Our code is based on the following platform and packages.
 - Python (3.7.0)
