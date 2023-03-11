@@ -1,7 +1,8 @@
-import torch
-import torch.nn.functional as func
-from torch import Tensor
-from torch.utils.data import DataLoader
+import mindspore as ms
+import mindspore.ops as ops
+import mindspore.nn as nn
+from mindspore import Tensor
+import mindspore.dataset as dataset
 
 import numpy as np
 from numpy import ndarray

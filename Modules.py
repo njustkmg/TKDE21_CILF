@@ -1,29 +1,27 @@
 import random
-
-import torch
-import torch.nn as nn
-import torch.utils.data
-import torchvision
-from torch import Tensor
-from torch.utils.data import DataLoader
-
 import numpy as np
 from numpy import ndarray
 
 from typing import NoReturn, Tuple
 from Dataset import Dataset, PoolDataset
 
+from mindvision.classification.models import resnet18
+import mindspore as ms
+import mindspore.nn as nn
+import mindspore.ops as ops
+from mindspore import Tensor
 
-class Net(nn.Module):
+
+class Net(nn.Cell):
     def __init__(self):
         super(Net, self).__init__()
-        self.resnet = torchvision.models.resnet18(pretrained=True)
-        self.resnet = nn.Sequential(*list(self.resnet.children())[:-1])
-        self.fc = nn.Linear(in_features=512, out_features=128)
+        self.resnet = resnet18(pretrained=True).backbone
+        self.resnet =  nn.CellList(list(self.resnet.cells()))
+        self.fc = nn.Dense(in_channels=512, out_channels=128)
         self.norm = nn.BatchNorm1d(num_features=512)
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.ReLU()
 
-    def forward(self, x: Tensor) -> Tensor:
+    def construct(self, x: Tensor) -> Tensor:
         f512 = self.resnet(x)
         f512 = f512.view(-1, 512)
         f512 = self.norm(f512)
@@ -32,17 +30,17 @@ class Net(nn.Module):
         return f128
 
     def load(self, filename: str) -> NoReturn:
-        super(Net, self).load_state_dict(torch.load(filename, map_location=torch.device("cuda")))
+        ms.load_param_into_net(self, ms.load_checkpoint(filename))
 
     def save(self, filename: str) -> NoReturn:
-        torch.save(self.state_dict(), filename)
+        ms.save_checkpoint(self.parameters_dict(), filename)
 
 
 class Centers:
     def __init__(self, rate_old: float):
         self.rate_old = rate_old
         self.centers_index = set()
-        self.centers = torch.zeros((10, 512), dtype=torch.float32, requires_grad=False).cuda()
+        self.centers = ops.Zeros((10, 512), dtype=ms.float32)
 
     def __str__(self):
         return f"centers_index = {self.centers_index}    shape = {self.centers.shape}"
@@ -52,7 +50,7 @@ class Centers:
         dataloader = DataLoader(dataset_name, batch_size=256, shuffle=True, num_workers=4)
 
         self.centers_index = set()
-        self.centers = torch.zeros((10, 512), dtype=torch.float32, requires_grad=False).cuda()
+        self.centers = ops.Zeros((10, 512), dtype=ms.float32)
 
         with torch.no_grad():
             for _, batch_data, batch_labels in dataloader:

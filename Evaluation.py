@@ -1,8 +1,8 @@
 from typing import Dict, List, NoReturn, Tuple, Optional, Union, Iterable
-import torch
-import torch.utils.data
+import mindspore
+import mindspore.dataset as dataset
 from sklearn import metrics
-from torch import Tensor
+from mindspore import Tensor
 
 import os
 import numpy as np

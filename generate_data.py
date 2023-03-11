@@ -1,5 +1,6 @@
-import torchvision
-import torchvision.transforms as transforms
+from mindspore.dataset import vision, transforms
+import mindspore
+
 
 import numpy as np
 from numpy import ndarray

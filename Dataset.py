@@ -1,7 +1,7 @@
-import torch
-import torch.utils.data
-import torchvision.transforms as transforms
-from torch import Tensor
+import mindspore
+import mindspore.dataset as dataset
+from mindspore.dataset import vision, transforms
+from mindspore import Tensor
 
 import numpy as np
 
